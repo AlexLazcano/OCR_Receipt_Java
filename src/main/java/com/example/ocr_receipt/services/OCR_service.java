@@ -5,7 +5,10 @@ import net.sourceforge.tess4j.TesseractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 public class OCR_service {
@@ -16,12 +19,14 @@ public class OCR_service {
         this.tesseract = tesseract;
     }
 
-    public String doOCR(String imagePath) {
+    public String doOCR(InputStream inputStream) throws IOException {
         try {
-            return tesseract.doOCR(new File(imagePath));
+            BufferedImage image = ImageIO.read(inputStream);
+            return tesseract.doOCR(image);
         }
         catch (TesseractException e) {
-            return "error " + e.getMessage();
+            e.printStackTrace();
+            return "OCR Error";
         }
     }
 }
